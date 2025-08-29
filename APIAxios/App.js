@@ -1,11 +1,30 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Button, Image, StyleSheet } from 'react-native';
+import api from './src/services/api';  
 
 export default function App() {
+  const [cats, catImageUrl] = useState(null);
+
+  async function buscar() {
+    try {
+      const result = await api.get('https://api.thecatapi.com/v1/images/search?limit=1');
+      catImageUrl(result.data[0].url);
+      console.log(result.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <Text style={styles.title}>CatFinderUwU</Text>
+      <Button title="Ver gatinhos :3" onPress={buscar} />
+      {cats && (
+        <Image
+          source={{ uri: cats }}
+          style={styles.image}
+        />
+      )}
     </View>
   );
 }
@@ -13,8 +32,19 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: 'pink',
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
+  },
+  image: {
+    width: 300,
+    height: 300,
+    marginTop: 20,
+    borderRadius: 10,
   },
 });
